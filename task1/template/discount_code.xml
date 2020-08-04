@@ -1,0 +1,21 @@
+<odoo>
+    <template id="special_discount_code" inherit_id="website_sale.total">
+            <xpath expr="//div[@id='cart_total']/table/tr[1]" position="after">
+                <t t-if="website_sale_order.partner_id.status == 'Valid code'">
+                    <tr>
+                        <strong>
+                            <td>Applied Customer Code</td>
+                        </strong>
+                        <td t-esc="website_sale_order.partner_id.discount_code"/>
+                    </tr>
+                </t>
+                <p t-else="">
+                    <tr>
+                        <strong>
+                            <td>No Code Applied</td>
+                        </strong>
+                    </tr>
+                </p>
+            </xpath>
+    </template>
+</odoo>

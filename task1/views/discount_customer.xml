@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+<!--        add mass update in action-->
+        <record model="ir.ui.view" id="update_code_view_wizard">
+            <field name="name">wizard.form.view</field>
+            <field name="model">update.discount.code</field>
+            <field name="arch" type="xml">
+                <form string="update">
+                    <group>
+                        <field name="update_discount_code" />
+                    </group>
+                    <footer>
+                        <button name="update" string="Update" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+         <act_window name="Update Customer Code"
+                     res_model="update.discount.code"
+                     binding_model="res.partner"
+                     binding_views="list"
+                     view_mode="form" target="new"
+                     id="mass_update_customer_code_action"
+                     groups="task1.advanced_sale"/>
+
+<!--        filter inherit-->
+        <record id="special_customer" model="ir.ui.view">
+            <field name="name">special_customer.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='my_sale_orders_filter']" position="before">
+                    <separator/>
+                        <filter string="Special Customer" name="valid_code" domain="[('valid_code', '=', 'Valid code')]"/>
+                    <separator/>
+                </xpath>
+            </field>
+    </record>
+
+<!--        -->
+        <record id="res_partner_view_form_inherit" model="ir.ui.view">
+            <field name="name">discount.customer.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='website']" position="after">
+                    <field name="discount_code" groups="task1.advanced_sale"/>
+                    <field name="status"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--        discount total-->
+        <record id="sale_order_view_form_inherit" model="ir.ui.view">
+            <field name="name">quotation.view.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="discount_code"/>
+                    <field name="valid_code"/>
+                </xpath>
+                <xpath expr="//field[@name='amount_tax']" position="after">
+                    <field name="discount_percent"/>
+                </xpath>
+                <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="final_total"/>
+                </xpath>
+            </field>
+        </record>
+
+<!-- special customer-->
+        <record id="special_customer" model="ir.actions.act_window">
+            <field name="name">Special Customer</field>
+            <field name="res_model">res.partner</field>
+            <field name="domain">[('status', '=', 'Valid code')]</field>
+
+        </record>
+
+        <menuitem id="special_customer_menu"
+            name="Special Customer"
+            parent="sale.sale_order_menu"
+            sequence="1" action="special_customer"/>
+
+<!--      show fields discount code  -->
+        <record model="ir.ui.view" id="view_partner_tree">
+            <field name="name">res.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <tree string="Contacts">
+                     <field name="discount_code" groups="task1.advanced_sale"/>
+                </tree>
+                <xpath expr="//field[@name='email']" position="replace" invisible="1">
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="replace" invisible="1">
+                </xpath>
+            </field>
+        </record>
+
+<!--        -->
+        <record id="special_discount_edit" model="ir.ui.view">
+            <field name="name">Change Discount Code</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Edit Discount Code" editable="bottom" create="false" delete="false">
+                    <field name="discount_code"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>
