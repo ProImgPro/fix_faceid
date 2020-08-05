@@ -1,0 +1,28 @@
+<odoo>
+    <template id="warranty" inherit_id="website_sale.total">
+            <xpath expr="//div[@id='cart_total']//table/tr[last()]" position="after">
+                <t t-foreach="website_sale_order.website_order_line.product_template_id" t-as="o">
+                    <t t-if="o.product_warranty != 'False'">
+                        <tr>
+                            <strong>
+                                <td>Valid Warranty</td>
+                            </strong>
+                            <td t-esc="o.product_warranty"/>
+                        </tr>
+                    </t>
+                    <p t-else="">
+                        <tr>
+                            <strong>
+                                <td>Invalid Warranty</td>
+                            </strong>
+                        </tr>
+                    </p>
+                </t>
+            </xpath>
+    </template>
+</odoo>
+
+
+
+
+

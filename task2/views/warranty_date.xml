@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<odoo>
+<!--    inherit models and add fields-->
+    <record id="product_template_form_inherit" model="ir.ui.view">
+            <field name="name">product.template.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='taxes_id']" position="before">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="product_warranty"/>
+                    <field name="status"/>
+                    <field name="time_warranty"/>
+                </xpath>
+            </field>
+    </record>
+
+<!--   show warranty_time -->
+    <record model="ir.ui.view" id="view_warranty_tree">
+            <field name="name">product.template.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <tree string="Product">
+                     <field name="product_warranty" groups="task2.advanced_warranty"/>
+                     <field name="warranty_time"/>
+                </tree>
+            </field>
+    </record>
+
+<!--  menu valid warranty  -->
+    <record id="valid_warranty" model="ir.actions.act_window">
+        <field name="name">Warranty</field>
+        <field name="res_model">product.template</field>
+        <field name="domain">[('status', '=', 'Value'),('time_warranty', '=', 'unexpired')]</field>
+    </record>
+
+    <menuitem id="valid_warranty_menu"
+        name="Valid Warranty"
+        parent="sale.product_menu_catalog"
+        sequence="1" action="valid_warranty"/>
+
+<!--    Create Filter-->
+    <record id="warranty_search_view" model="ir.ui.view">
+        <field name="name">warranty.search</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <filter string="Search Name" name="warranty_time" domain="[('name','=', 'Com')]"/>
+            </search>
+        </field>
+    </record>
+
+<!--        add mass update in action-->
+        <record model="ir.ui.view" id="update_warranty_view_wizard">
+            <field name="name">warranty.form.view</field>
+            <field name="model">update.warranty</field>
+            <field name="arch" type="xml">
+                <form string="update">
+                    <group>
+                        <field name="date_from_update" />
+                        <field name="date_to_update" />
+                    </group>
+                    <footer>
+                        <button name="update" string="Update" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+         <act_window name="Update Warranty"
+                     res_model="update.warranty"
+                     binding_model="product.template"
+                     binding_views="list"
+                     view_mode="form" target="new"
+                     id="mass_update_warranty_action"
+                     groups="task2.advanced_warranty"/>
+</odoo>
