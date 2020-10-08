@@ -6,7 +6,7 @@
      'version':'12.0.1',
      'depends':['base', 'sale'],
      'data': ['security/ir.model.access.csv',
-               'security/advanced_sale.xml',
+               'security/advanced_warranty.xml',
               'views/discount_customer.xml',
               'template/discount_code.xml']
 
